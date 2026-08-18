@@ -2,74 +2,81 @@ INSTRUCCIONES COMPLETAS PARA EL ASISTENTE (PROMPT ÚNICO Y DEFINITIVO)
 ========================================================================
 
 Debes generar un proyecto C++ completo para Raspberry Pi (compatible con 32 y 64 bits) que use la librería bcm2835, siguiendo la estructura de carpetas y archivos que se detalla abajo. El proyecto debe ser autocontenido, compilable con make, y debe incluir todo el código fuente, cabeceras, scripts de instalación, documentación y archivos de configuración.
-
+Para un modulo max98357a y un dispplay oled SSD1306
 ESTRUCTURA OBLIGATORIA (crear todos los directorios y archivos)
-----------------------------------------------------------------
+.
 ├── bin
-│   └── App                           # binario final
+│   └── App
 ├── config
-│   ├── config.cfg                    # vacío o con ejemplos
-│   └── hardware.cfg                  # vacío
+│   ├── config.cfg
+│   └── hardware.cfg
 ├── docs
-│   ├── ACTIVITY.md
-│   ├── API.md
-│   ├── ARCHITECTURE.md
-│   ├── ARQUITECTURA.md
-│   ├── BLUETOOTH.md
-│   ├── BUILD.md
-│   ├── CHANGELOG.md
-│   ├── CONTRIBUTING.md
-│   ├── DEPLOY.md
-│   ├── DESING.md                     # (mantén este nombre aunque sea "DESIGN")
-│   ├── DIAGRAMS.md
-│   ├── doxygen/                      # directorio (vacío)
-│   ├── HARDWARE.md
-│   ├── INSTALL.md
-│   ├── LEARNINGS.md                  # DEBES LEER Y COMPLETAR (si existe)
-│   ├── MEMORY_MAP.md
-│   ├── PROMPT.md
-│   ├── REPORT.md
-│   ├── ROADMAP.md
-│   ├── RULES.md
-│   ├── SECURITY.md
-│   ├── SETUP.md
-│   ├── SKILLS.md
-│   ├── TESTING.md
-│   ├── TODO.md
-│   ├── TROUBLESHOOTING.md
-│   ├── USAGE.md
-│   └── WORKFLOW.md                   # DEBES LEER Y COMPLETAR (si existe)
-├── examples                          # directorio vacío
-├── generate_basic_src.sh             # script auxiliar (puede estar vacío)
+│   ├── ACTIVITY.md
+│   ├── API.md
+│   ├── ARCHITECTURE.md
+│   ├── ARQUITECTURA.md
+│   ├── BLUETOOTH.md
+│   ├── BUILD.md
+│   ├── CHANGELOG.md
+│   ├── CONTRIBUTING.md
+│   ├── DEPLOY.md
+│   ├── DESING.md
+│   ├── DIAGRAMS.md
+│   ├── doxygen
+│   ├── HARDWARE.md
+│   ├── INSTALL.md
+│   ├── LEARNINGS.md
+│   ├── ma98357a.jpg
+│   ├── MEMORY_MAP.md
+│   ├── PROMPT.md
+│   ├── raspberry_pi_4.png
+│   ├── REPORT.md
+│   ├── ROADMAP.md
+│   ├── RULES.md
+│   ├── SECURITY.md
+│   ├── SETUP.md
+│   ├── SKILLS.md
+│   ├── TESTING.md
+│   ├── TODO.md
+│   ├── TROUBLESHOOTING.md
+│   ├── USAGE.md
+│   └── WORKFLOW.md
 ├── include
-│   ├── core/                         # cabeceras del núcleo (vacío)
-│   ├── drivers/                      # cabeceras de drivers (vacío)
-│   ├── engine/                       # cabeceras del motor (vacío)
-│   ├── HMC5883L.hpp                  # cabecera del magnetómetro
-│   ├── libraries/                    # cabeceras externas (vacío)
-│   ├── nlohmann/
-│   │   └── json.hpp                  # librería JSON (puede ser vacía o la oficial)
-│   ├── oled/
-│   │   ├── SSD1306_OLED_font.hpp
-│   │   ├── SSD1306_OLED_graphics.hpp
-│   │   ├── SSD1306_OLED.hpp
-│   │   └── SSD1306_OLED_Print.hpp
-│   └── security/                     # cabeceras de seguridad (vacío)
-├── LICENSE                           # licencia (ej. MIT)
-├── Makefile                          # archivo de compilación (debe definir VERSION)
-├── obj/                              # directorio para objetos (se creará durante la compilación)
-├── README.md                         # DEBES COMPLETARLO
-├── scripts/
-│   └── install_deps.sh               # script para instalar dependencias
-├── src/
-│   ├── engine/                       # fuentes del motor (vacío)
-│   ├── main.cpp                      # archivo principal (ver formato abajo)
-│   └── oled/
-│       ├── SSD1306_OLED.cpp
-│       ├── SSD1306_OLED_font.cpp
-│       ├── SSD1306_OLED_graphics.cpp
-│       └── SSD1306_OLED_Print.cpp
-└── VERSION                           # archivo con el número de versión (ej. 0.1.0)
+│   ├── core
+│   ├── drivers
+│   ├── engine
+│   ├── libraries
+│   ├── nlohmann
+│   │   └── json.hpp
+│   ├── oled
+│   │   ├── SSD1306_OLED_font.hpp
+│   │   ├── SSD1306_OLED_graphics.hpp
+│   │   ├── SSD1306_OLED.hpp
+│   │   └── SSD1306_OLED_Print.hpp
+│   ├── security
+│   └── sound
+│       ├── max98357a.hpp
+│       └── mp3.hpp
+├── LICENSE
+├── Makefile
+├── obj
+├── prompt.md
+├── README.md
+├── scripts
+│   ├── generate_basic_src.sh
+│   └── install_deps.sh
+├── src
+│   ├── engine
+│   ├── main.cpp
+│   ├── oled
+│   │   ├── SSD1306_OLED.cpp
+│   │   ├── SSD1306_OLED_font.cpp
+│   │   ├── SSD1306_OLED_graphics.cpp
+│   │   └── SSD1306_OLED_Print.cpp
+│   └── sound
+│       ├── max98357a.cpp
+│       └── mp3.cpp
+└── VERSION
 
 
 REQUISITOS FUNCIONALES DEL CÓDIGO
