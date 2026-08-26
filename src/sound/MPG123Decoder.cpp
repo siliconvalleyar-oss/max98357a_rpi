@@ -9,7 +9,7 @@ namespace Sound {
 static std::atomic<int> underrun_count{0};
 
 static void alsaErrorHandler(const char* file, int line, const char* function, int err, const char* fmt, ...) {
-    if (err == -EPIPE || (fmt && strstr(fmt, "underrun"))) {
+    if (fmt && strstr(fmt, "underrun")) {
         underrun_count++;
         return;
     }
