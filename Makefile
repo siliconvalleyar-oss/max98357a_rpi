@@ -1,7 +1,7 @@
 VERSION := $(shell cat VERSION 2>/dev/null || echo "0.1.0")
 
 CXX := g++
-CXXFLAGS := -std=c++17 -Wall -Wextra -DVERSION="$(VERSION)" -Iinclude -Iinclude/core -Iinclude/drivers -Iinclude/engine -Iinclude/security -Iinclude/sound -Iinclude/oled -Iinclude/libraries
+CXXFLAGS := -std=c++17 -Wall -Wextra -DVERSION=\"$(VERSION)\" -Iinclude -Iinclude/core -Iinclude/drivers -Iinclude/engine -Iinclude/security -Iinclude/sound -Iinclude/oled -Iinclude/libraries
 LDFLAGS := -lbcm2835 -lasound
 
 SRCDIR := src
