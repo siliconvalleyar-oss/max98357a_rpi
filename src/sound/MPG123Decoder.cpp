@@ -1,14 +1,32 @@
 #include "MPG123Decoder.hpp"
 #include <iostream>
 #include <vector>
+#include <atomic>
 
 namespace Device {
 namespace Sound {
+
+static std::atomic<int> underrun_count{0};
+
+static void alsaErrorHandler(const char* file, int line, const char* function, int err, const char* fmt, ...) {
+    if (err == -EPIPE || (fmt && strstr(fmt, "underrun"))) {
+        underrun_count++;
+        return;
+    }
+    fprintf(stderr, "[ALSA] %s:%d (%s) error %d: ", file, line, function, err);
+    va_list args;
+    va_start(args, fmt);
+    vfprintf(stderr, fmt, args);
+    va_end(args);
+    fprintf(stderr, "\n");
+    va_end(args);
+}
 
 MPG123Decoder::MPG123Decoder()
     : mpg_handle(nullptr), pcm_handle(nullptr), playing(false),
       sample_rate_(44100), channels_(1) {
     mpg123_init();
+    snd_lib_error_set_handler(alsaErrorHandler);
 }
 
 MPG123Decoder::~MPG123Decoder() {
@@ -96,6 +114,11 @@ void MPG123Decoder::decodeAndPlay() {
             written = snd_pcm_recover(pcm_handle, written, 0);
             snd_pcm_writei(pcm_handle, buffer.data(), frames);
         }
+    }
+
+    int count = underrun_count.exchange(0);
+    if (count > 0) {
+        std::cout << "[ALSA] " << count << " underrun(s) durante reproduccion" << std::endl;
     }
 }
 
