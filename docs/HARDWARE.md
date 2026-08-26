@@ -17,5 +17,7 @@
 - BCLK -> GPIO18
 - LRC -> GPIO19
 - DIN -> GPIO21
+- GAIN -> No conectar (3dB por defecto)
+- SD -> No conectar (habilitado por defecto)
 - GND -> GND
-- VCC -> 3.3V or 5V
+- VIN -> 3.3V or 5V

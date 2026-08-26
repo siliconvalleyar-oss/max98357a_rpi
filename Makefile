@@ -2,7 +2,7 @@ VERSION := $(shell cat VERSION 2>/dev/null || echo "0.1.0")
 
 CXX := g++
 CXXFLAGS := -std=c++17 -Wall -Wextra -DVERSION=\"$(VERSION)\" -Iinclude -Iinclude/core -Iinclude/drivers -Iinclude/engine -Iinclude/security -Iinclude/sound -Iinclude/oled -Iinclude/libraries
-LDFLAGS := -lbcm2835 -lasound
+LDFLAGS := -lbcm2835 -lasound -lmpg123 -lstdc++fs
 
 SRCDIR := src
 OBJDIR := obj
@@ -32,4 +32,7 @@ clean:
 distclean: clean
 	rm -f $(BINDIR)/App
 
-.PHONY: all clean distclean
+run: all
+	./$(BINDIR)/App
+
+.PHONY: all clean distclean run

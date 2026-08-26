@@ -2,17 +2,21 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <filesystem>
 #include <bcm2835.h>
 #include <oled/SSD1306_OLED.hpp>
 #include <sound/max98357a.hpp>
+#include <sound/mp3.hpp>
 
 #ifndef VERSION
 #define VERSION "0.1.0"
 #endif
 
+namespace fs = std::filesystem;
+
 namespace Device {
 
-Device_t::Device_t() : oled_initialized(false) {}
+Device_t::Device_t() : oled_initialized(false), mp3_dir("mp3") {}
 
 Device_t::~Device_t() {}
 
@@ -38,6 +42,11 @@ void Device_t::initOLED() {
 }
 
 void Device_t::displayInfo() {
+    std::cout << "=== Dispositivo ===" << std::endl;
+    std::cout << "Version: " << VERSION << std::endl;
+    std::cout << "OLED: " << (oled_initialized ? "Conectado" : "No detectado (consola)") << std::endl;
+    std::cout << "Audio: MAX98357A I2S" << std::endl;
+    std::cout << "===================" << std::endl;
 }
 
 void Device_t::playTestTone() {
@@ -59,6 +68,24 @@ void Device_t::playTestTone() {
     std::cout << "[Audio] Tono de prueba reproducido." << std::endl;
 }
 
+void Device_t::playMp3Folder() {
+    Sound::MP3Player player;
+
+    if (!player.loadDir(mp3_dir)) {
+        std::cout << "[MP3] No se encontraron archivos en " << mp3_dir << std::endl;
+        return;
+    }
+
+    for (int i = 0; i < player.getTracks().size(); i++) {
+        std::cout << "[MP3] Reproduciendo pista " << i + 1 << "/" << player.getTracks().size() << std::endl;
+        if (!player.play()) {
+            std::cerr << "[MP3] Error reproduciendo pista" << std::endl;
+        }
+    }
+
+    std::cout << "[MP3] Fin de la lista." << std::endl;
+}
+
 void Device_t::cleanup() {
     bcm2835_i2c_end();
     bcm2835_spi_end();
@@ -73,6 +100,7 @@ void Device_t::run() {
     initOLED();
     displayInfo();
     playTestTone();
+    playMp3Folder();
 
     std::cout << "Presiona Ctrl+C para salir." << std::endl;
     bcm2835_delay(5000);

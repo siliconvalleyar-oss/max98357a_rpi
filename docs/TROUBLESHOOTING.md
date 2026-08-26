@@ -9,3 +9,10 @@
 - Ensure ALSA is configured for MAX98357A.
 - Check I2S pins.
 - Run `aplay /usr/share/sounds/alsa/Front_Left.wav`.
+
+## Bluetooth br-connection-adapter-not-powered
+```bash
+sudo rfkill unblock bluetooth
+sudo hciconfig hci0 up
+bluetoothctl power on
+```
