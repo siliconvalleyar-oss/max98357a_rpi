@@ -33,6 +33,19 @@ void Device_t::initBcm2835() {
 }
 
 void Device_t::initOLED() {
+    if (!bcm2835_i2c_begin()) {
+        std::cout << "[OLED] I2C no disponible. Usando consola." << std::endl;
+        return;
+    }
+    bcm2835_i2c_setSlaveAddress(0x3C);
+    char buf[1] = {0x00};
+    if (bcm2835_i2c_write(buf, 1) != BCM2835_I2C_REASON_OK) {
+        std::cout << "[OLED] SSD1306 no detectado en I2C. Usando consola." << std::endl;
+        bcm2835_i2c_end();
+        return;
+    }
+    bcm2835_i2c_end();
+
     SSD1306 oled(128, 64);
     oled.OLEDbegin();
     oled.OLEDclearBuffer();
