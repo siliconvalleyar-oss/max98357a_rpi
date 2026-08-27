@@ -1,5 +1,7 @@
 #include "max98357a.hpp"
 #include <cstring>
+#include <cstdlib>
+#include <algorithm>
 #include <iostream>
 
 namespace Device {
