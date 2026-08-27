@@ -6,6 +6,8 @@
 
 #include "SSD1306_OLED.hpp"
 #include <stdbool.h>
+#include <cstring>
+#include <new>
 
 SSD1306  :: SSD1306(int16_t oledwidth, int16_t oledheight) :SSD1306_graphics(oledwidth, oledheight)
 {
@@ -14,6 +16,16 @@ SSD1306  :: SSD1306(int16_t oledwidth, int16_t oledheight) :SSD1306_graphics(ole
 	_OLED_PAGE_NUM = (_OLED_HEIGHT/8); 
 	bufferWidth = _OLED_WIDTH;
 	bufferHeight = _OLED_HEIGHT;
+
+	const size_t bufSize = static_cast<size_t>(bufferWidth) * (bufferHeight / 8);
+	buffer = new (std::nothrow) uint8_t[bufSize];
+	if (buffer) memset(buffer, 0x00, bufSize);
+}
+
+SSD1306 :: ~SSD1306()
+{
+	delete[] buffer;
+	buffer = nullptr;
 }
 
 // Desc: begin Method initialise OLED

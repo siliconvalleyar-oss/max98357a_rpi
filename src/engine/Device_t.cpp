@@ -40,6 +40,11 @@ void Device_t::initOLED() {
     SSD1306 oled(128, 64);
     oled.OLEDbegin();
     oled.OLEDclearBuffer();
+    oled.setTextColor(WHITE);
+    oled.setTextSize(1);
+    oled.drawText(0, 0, (char*)"MAX98357A", WHITE, BLACK, 1);
+    oled.drawText(0, 16, (char*)"App v", WHITE, BLACK, 1);
+    oled.drawText(48, 16, (char*)VERSION, WHITE, BLACK, 1);
     oled.OLEDupdate();
 
     fclose(stderr);
@@ -84,9 +89,10 @@ void Device_t::playMp3Folder() {
         return;
     }
 
-    for (int i = 0; i < player.getTracks().size(); i++) {
+    for (size_t i = 0; i < player.getTracks().size(); i++) {
         std::cout << "[MP3] Reproduciendo pista " << i + 1 << "/" << player.getTracks().size() << std::endl;
-        if (!player.play()) {
+        bool ok = (i == 0) ? player.play() : player.next();
+        if (!ok) {
             std::cerr << "[MP3] Error reproduciendo pista" << std::endl;
         }
     }

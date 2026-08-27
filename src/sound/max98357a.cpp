@@ -63,14 +63,21 @@ bool Max98357A::init(uint32_t sample_rate, uint8_t channels) {
 
 bool Max98357A::play(const int16_t* buffer, size_t frames) {
     if (!pcm_handle) return false;
-    int err = snd_pcm_writei(pcm_handle, buffer, frames);
-    if (err == -EPIPE) {
-        snd_pcm_prepare(pcm_handle);
-        err = snd_pcm_writei(pcm_handle, buffer, frames);
-    }
-    if (err < 0) {
-        std::cerr << "Error escribiendo audio: " << snd_strerror(err) << std::endl;
-        return false;
+
+    size_t offset = 0;
+    while (offset < frames) {
+        snd_pcm_sframes_t written =
+            snd_pcm_writei(pcm_handle, buffer + offset, frames - offset);
+        if (written < 0) {
+            if (written == -EPIPE) {
+                snd_pcm_prepare(pcm_handle);
+                continue;
+            }
+            std::cerr << "Error escribiendo audio: " << snd_strerror(written) << std::endl;
+            return false;
+        }
+        if (written == 0) break;
+        offset += static_cast<size_t>(written);
     }
     return true;
 }
