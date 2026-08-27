@@ -5,6 +5,24 @@
 namespace Device {
 namespace Sound {
 
+std::string max98357aDevice() {
+    int card = -1;
+    if (snd_card_next(&card) != 0) return "default";
+    while (card >= 0) {
+        char* name = nullptr;
+        if (snd_card_get_name(card, &name) == 0) {
+            std::string n(name);
+            std::transform(n.begin(), n.end(), n.begin(), ::tolower);
+            free(name);
+            if (n.find("max98357a") != std::string::npos) {
+                return "plughw:" + std::to_string(card) + ",0";
+            }
+        }
+        if (snd_card_next(&card) != 0) break;
+    }
+    return "default";
+}
+
 Max98357A::Max98357A() : pcm_handle(nullptr), sample_rate_(44100), channels_(1) {}
 
 Max98357A::~Max98357A() { close(); }
@@ -13,7 +31,7 @@ bool Max98357A::init(uint32_t sample_rate, uint8_t channels) {
     sample_rate_ = sample_rate;
     channels_ = channels;
 
-    int err = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
+    int err = snd_pcm_open(&pcm_handle, max98357aDevice().c_str(), SND_PCM_STREAM_PLAYBACK, 0);
     if (err < 0) {
         std::cerr << "Error abriendo PCM: " << snd_strerror(err) << std::endl;
         return false;

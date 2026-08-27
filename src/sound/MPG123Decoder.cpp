@@ -1,4 +1,5 @@
 #include "MPG123Decoder.hpp"
+#include "max98357a.hpp"
 #include <iostream>
 #include <vector>
 #include <atomic>
@@ -71,7 +72,7 @@ bool MPG123Decoder::open(const std::string& filepath) {
 bool MPG123Decoder::initAlsa(long rate, int channels) {
     closeAlsa();
 
-    int err = snd_pcm_open(&pcm_handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
+    int err = snd_pcm_open(&pcm_handle, max98357aDevice().c_str(), SND_PCM_STREAM_PLAYBACK, 0);
     if (err < 0) {
         std::cerr << "[ALSA] Error abriendo PCM: " << snd_strerror(err) << std::endl;
         return false;

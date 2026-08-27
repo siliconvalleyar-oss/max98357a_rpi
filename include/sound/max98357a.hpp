@@ -2,10 +2,13 @@
 #define MAX98357A_HPP
 
 #include <cstdint>
+#include <string>
 #include <alsa/asoundlib.h>
 
 namespace Device {
 namespace Sound {
+
+std::string max98357aDevice();
 
 class Max98357A {
 public:
