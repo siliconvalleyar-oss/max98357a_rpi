@@ -21,6 +21,7 @@ public:
     bool isPlaying() const;
     long sampleRate() const;
     int channels() const;
+    void setVolume(float v);
 
 private:
     bool initAlsa(long rate, int channels);
@@ -32,6 +33,7 @@ private:
     std::atomic<bool> playing;
     long sample_rate_;
     int channels_;
+    float volume_;
 };
 
 } // namespace Sound

@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <algorithm>
 #include <iostream>
+#include <vector>
 
 namespace Device {
 namespace Sound {
@@ -25,7 +26,7 @@ std::string max98357aDevice() {
     return "default";
 }
 
-Max98357A::Max98357A() : pcm_handle(nullptr), sample_rate_(44100), channels_(1) {}
+Max98357A::Max98357A() : pcm_handle(nullptr), sample_rate_(44100), channels_(1), volume_(1.0f) {}
 
 Max98357A::~Max98357A() { close(); }
 
@@ -81,13 +82,28 @@ bool Max98357A::init(uint32_t sample_rate, uint8_t channels) {
     return true;
 }
 
+void Max98357A::setVolume(float v) {
+    if (v < 0.0f) v = 0.0f;
+    if (v > 1.0f) v = 1.0f;
+    volume_ = v;
+}
+
 bool Max98357A::play(const int16_t* buffer, size_t frames) {
     if (!pcm_handle) return false;
+
+    const int16_t* p = buffer;
+    std::vector<int16_t> scaled;
+    if (volume_ < 1.0f - 1e-3f) {
+        scaled.resize(frames);
+        for (size_t i = 0; i < frames; ++i)
+            scaled[i] = static_cast<int16_t>(buffer[i] * volume_);
+        p = scaled.data();
+    }
 
     size_t offset = 0;
     while (offset < frames) {
         snd_pcm_sframes_t written =
-            snd_pcm_writei(pcm_handle, buffer + offset, frames - offset);
+            snd_pcm_writei(pcm_handle, p + offset, frames - offset);
         if (written < 0) {
             if (written == -EPIPE) {
                 snd_pcm_prepare(pcm_handle);

@@ -17,11 +17,13 @@ public:
     bool init(uint32_t sample_rate = 44100, uint8_t channels = 1);
     bool play(const int16_t* buffer, size_t frames);
     void close();
+    void setVolume(float v);
 
 private:
     snd_pcm_t* pcm_handle;
     uint32_t sample_rate_;
     uint8_t channels_;
+    float volume_;
 };
 
 } // namespace Sound

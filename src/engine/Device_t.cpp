@@ -17,6 +17,8 @@ namespace fs = std::filesystem;
 
 namespace Device {
 
+constexpr float kVolume = 0.4f;
+
 Device_t::Device_t() : oled_initialized(false), mp3_dir("mp3") {}
 
 Device_t::~Device_t() {}
@@ -64,6 +66,7 @@ void Device_t::displayInfo() {
 
 void Device_t::playTestTone() {
     Sound::Max98357A audio;
+    audio.setVolume(kVolume);
     if (!audio.init(44100, 1)) {
         std::cerr << "[Audio] Error inicializando MAX98357A" << std::endl;
         return;
@@ -83,6 +86,7 @@ void Device_t::playTestTone() {
 
 void Device_t::playMp3Folder() {
     Sound::MP3Player player;
+    player.setVolume(kVolume);
 
     if (!player.loadDir(mp3_dir)) {
         std::cout << "[MP3] No se encontraron archivos en " << mp3_dir << std::endl;

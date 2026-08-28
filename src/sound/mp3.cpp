@@ -78,5 +78,7 @@ bool MP3Player::isPlaying() const { return decoder.isPlaying(); }
 const std::vector<std::string>& MP3Player::getTracks() const { return tracks; }
 int MP3Player::currentIndex() const { return current; }
 
+void MP3Player::setVolume(float v) { decoder.setVolume(v); }
+
 } // namespace Sound
 } // namespace Device

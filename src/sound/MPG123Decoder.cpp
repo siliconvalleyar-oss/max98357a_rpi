@@ -24,8 +24,8 @@ static void alsaErrorHandler(const char* file, int line, const char* function, i
 }
 
 MPG123Decoder::MPG123Decoder()
-    : mpg_handle(nullptr), pcm_handle(nullptr), playing(false),
-      sample_rate_(44100), channels_(1) {
+     : mpg_handle(nullptr), pcm_handle(nullptr), playing(false),
+      sample_rate_(44100), channels_(1), volume_(1.0f) {
     mpg123_init();
     snd_lib_error_set_handler(alsaErrorHandler);
 }
@@ -100,6 +100,12 @@ void MPG123Decoder::closeAlsa() {
     }
 }
 
+void MPG123Decoder::setVolume(float v) {
+    if (v < 0.0f) v = 0.0f;
+    if (v > 1.0f) v = 1.0f;
+    volume_ = v;
+}
+
 void MPG123Decoder::decodeAndPlay() {
     size_t buffer_size = mpg123_outblock(mpg_handle);
     std::vector<unsigned char> buffer(buffer_size);
@@ -107,6 +113,13 @@ void MPG123Decoder::decodeAndPlay() {
 
     while (playing && mpg123_read(mpg_handle, buffer.data(), buffer_size, &done) == MPG123_OK) {
         if (done == 0) break;
+
+        if (volume_ < 1.0f - 1e-3f) {
+            int16_t* samples = reinterpret_cast<int16_t*>(buffer.data());
+            size_t n = done / 2;
+            for (size_t i = 0; i < n; ++i)
+                samples[i] = static_cast<int16_t>(samples[i] * volume_);
+        }
 
         snd_pcm_sframes_t frames = done / (2 * channels_);
         snd_pcm_sframes_t written = snd_pcm_writei(pcm_handle, buffer.data(), frames);

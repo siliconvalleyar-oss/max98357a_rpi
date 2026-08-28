@@ -23,6 +23,7 @@ public:
     bool isPlaying() const;
     const std::vector<std::string>& getTracks() const;
     int currentIndex() const;
+    void setVolume(float v);
 
 private:
     std::vector<std::string> tracks;
