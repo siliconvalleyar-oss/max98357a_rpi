@@ -10,6 +10,7 @@ public:
     Device_t();
     ~Device_t();
     void run();
+    void setVolume(float v);
 
 private:
     void showVersion() const;
@@ -23,6 +24,7 @@ private:
 
     bool oled_initialized;
     std::string mp3_dir;
+    float volume_;
 };
 
 } // namespace Device
